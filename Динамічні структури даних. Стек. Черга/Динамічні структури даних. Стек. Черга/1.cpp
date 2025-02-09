@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <string>
 
 template<typename T>
@@ -25,6 +25,14 @@ public:
     }
     void pop_back() { if (size > 0) --size; }
     T& back() { return data[size - 1]; }
+    T& front() { return data[0]; }
+    void erase_front() {
+        if (size > 0) {
+            for (size_t i = 0; i < size - 1; ++i)
+                data[i] = data[i + 1];
+            --size;
+        }
+    }
     bool empty() const { return size == 0; }
     void clear() { size = 0; }
 };
@@ -45,13 +53,12 @@ template<typename T>
 class Queue {
 private:
     Array<T> arr;
-    size_t front_index = 0;
 public:
     void push(const T& value) { arr.push_back(value); }
-    void pop() { if (front_index < arr.size()) ++front_index; }
-    T& top() { return arr[front_index]; }
-    bool empty() const { return front_index >= arr.size(); }
-    void clear() { arr.clear(); front_index = 0; }
+    void pop() { arr.erase_front(); }
+    T& top() { return arr.front(); }
+    bool empty() const { return arr.empty(); }
+    void clear() { arr.clear(); }
 };
 
 bool isBalanced(const std::string& str) {
@@ -63,7 +70,7 @@ bool isBalanced(const std::string& str) {
         }
         else if (ch == ')' || ch == '}' || ch == ']') {
             if (stack.empty()) {
-                std::cout << "Error in position " << i << ": extra closing bracket " << ch << "\n";
+                std::cout << "Position error " << i << ": extra closing parenthesis " << ch << "\n";
                 return false;
             }
             char open = stack.top();
@@ -71,22 +78,22 @@ bool isBalanced(const std::string& str) {
             if ((ch == ')' && open != '(') ||
                 (ch == '}' && open != '{') ||
                 (ch == ']' && open != '[')) {
-                std::cout << "Error in position " << i << ": discrepancy " << open << " и " << ch << "\n";
+                std::cout << "Position error " << i << ": incompatibility " << open << " і " << ch << "\n";
                 return false;
             }
         }
     }
     if (!stack.empty()) {
-        std::cout << "Error: not all opening brackets are closed." << std::endl;
+        std::cout << "Error: Not all opening parentheses are closed." << std::endl;
         return false;
     }
-    std::cout << "Brackets are placed correctly." << std::endl;
+    std::cout << "The brackets are positioned correctly." << std::endl;
     return true;
 }
 
 int main() {
     std::string input;
-    std::cout << "Enter a string with brackets (ended by the character ';'): ";
+    std::cout << "Enter a string with brackets (ending with a ';'): ";
     std::getline(std::cin, input);
     isBalanced(input);
     return 0;
